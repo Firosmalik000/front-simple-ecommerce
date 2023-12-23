@@ -15,26 +15,29 @@ const CartItem = ({ item }) => {
   if (!isLoggedInUserItem) {
     return null;
   }
+
   const handleClick = (e) => {
     console.log('User Info', detailCart);
   };
+
   const handleAmount = (e) => {
     e.preventDefault();
-    const amount = parseInt(e.target.value);
+    const newQty = parseInt(e.target.value);
 
-    console.log(amount, 'amount');
-    setQty(amount);
+    console.log(newQty, 'newQty');
+    setQty(newQty);
   };
-  const submitAmount = (e) => {
-    const amount = parseInt(e.target.value);
-    console.log(`submit : ${amount}`);
-    increaseByAmount(_id, amount);
+
+  const submitAmount = () => {
+    // You can choose whether to call increaseByAmount here or in onBlur, depending on your requirements.
+    increaseByAmount(_id, qty);
   };
+
   return (
-    <div className={`flex gap-x-4 py-2 lg:px-6 border-b border-gray-200 items-center flex justify-center mx-auto  w-[90%] `}>
+    <div className={`flex gap-x-4 py-2 lg:px-6 border-b border-gray-200 items-center  justify-center mx-auto  w-[90%] `}>
       <div className="w-full min-h-[150px] flex items-center gap-x-4">
         <Link to={`/${_id}`} onClick={handleClick}>
-          <img className="max-w-[80px] rounded rounded-lg " src={`http://localhost:5000/${image_url}`} />
+          <img className="max-w-[80px]  rounded-lg " src={`http://localhost:5000/${image_url}`} />
         </Link>
         <div className="w-full flex flex-col">
           <div className="flex justify-between mb-2">
@@ -47,17 +50,28 @@ const CartItem = ({ item }) => {
           </div>
           <div className=" flex gap-x-2 h-[36px] text-item ">
             <div className="flex flex-1 max-w-[100px] items-center h-full border text-primary font-medium">
-              <div className="flex-1 h-full flex justify-center items-center cursor-pointer h-full  bg-white" onClick={() => decreaseAmount(_id)}>
+              <button
+                className="flex-1 h-full flex justify-center items-center cursor-pointer  bg-white"
+                onClick={() => {
+                  decreaseAmount(_id);
+                  setQty(qty - 1);
+                }}
+              >
                 <IoMdRemove />
-              </div>
-              <input type="text" className="h-full flex justify-center items-center px-2  bg-white" onChange={handleAmount} onBlur={submitAmount} value={qty} />
-              {/* <div className="h-full flex justify-center items-center px-2  bg-white"> {amount}</div> */}
-              <div className="flex-1 h-full flex justify-center items-center cursor-pointer  bg-white" onClick={() => increaseAmount(_id)}>
+              </button>
+              <input type="text" className="h-full w-[50px] flex justify-center items-center px-2  bg-white" onChange={handleAmount} onBlur={submitAmount} value={qty} />
+              <button
+                className="flex-1 h-full flex justify-center items-center cursor-pointer  bg-white"
+                onClick={() => {
+                  increaseAmount(_id);
+                  setQty(qty + 1);
+                }}
+              >
                 <IoMdAdd />
-              </div>
+              </button>
             </div>
             <div className="flex flex-1 items-center justify-around">Rp {price} </div>
-            <div className={`flex flex-1 justify-end items-center text-primary font-medium ${isDarkMode && ' text-white'}`}> {`Rp ${parseFloat(price * amount).toFixed(2)}`}</div>
+            <div className={`flex flex-1 justify-end items-center text-primary font-medium ${isDarkMode && ' text-white'}`}> {`Rp ${parseFloat(price * qty).toFixed(2)}`}</div>
           </div>
         </div>
       </div>
